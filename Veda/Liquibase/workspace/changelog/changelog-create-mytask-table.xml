@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog 
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="create-mytask-tables" author="Aon">
+		<sql>
+			<![CDATA[
+				create table mytask.users (
+		  			id serial not null constraint users_pk primary key,
+					username varchar(255) not null,
+					birth_date timestamptz,
+					profile_picture varchar(255),
+					email varchar(255),
+					password varchar(255) not null,
+					last_login timestamptz,
+		  			created_at timestamptz DEFAULT now(),
+		  			updated_at timestamptz DEFAULT now()
+	  			);
+
+				create table mytask.colors (
+					id bigint not null constraint colors_pk primary key,
+				  	code_color varchar(20),
+					created_at timestamptz DEFAULT now(),
+					updated_at timestamptz DEFAULT now()
+				);
+
+				INSERT INTO mytask.colors (id, code_color)
+				VALUES
+				(1, 'bg-[#A9D6A2]'),
+				(2, 'bg-[#F4A84D]'),
+				(3, 'bg-[#81C8D8]'),
+				(4, 'bg-[#A380D0]'),
+				(5, 'bg-[#FFABD3]'),
+				(6, 'bg-[#E35858]');
+
+	  			create table mytask.tasks (
+		  			id serial not null constraint tasks_pk primary key,
+					user_id bigint not null constraint tasks_users_id_fk references mytask.users,
+					topic varchar(255) not null,
+		  			description varchar(255),
+					progress numeric,
+					is_completed bool not null,
+					cover_color_id int4 not null constraint tasks_colors_id_fk references mytask.colors,
+					is_public bool not null,
+					due_date timestamptz,
+		  			created_at timestamptz DEFAULT now(),
+		  			updated_at timestamptz DEFAULT now()
+	  			);
+				
+				create table mytask.todolist (
+		  			id serial not null constraint todalist_pk primary key,
+					task_id bigint not null constraint todolist_tasks_id_fk references mytask.tasks,
+		  			description varchar(255),
+					is_completed bool not null
+	  			);
+				
+				create table mytask.comments (
+		  			id serial not null constraint comments_pk primary key,
+					user_id bigint not null constraint comments_users_id_fk references mytask.users,
+					task_id bigint not null constraint comments_tasks_id_fk references mytask.tasks,
+		  			content varchar(255),
+					created_at timestamptz DEFAULT now(),
+		  			updated_at timestamptz DEFAULT now()
+	  			);
+				
+				create table mytask.liked_task (
+		  			id serial not null constraint liked_task_pk primary key,
+					user_id bigint not null constraint liked_task_users_id_fk references mytask.users,
+					task_id bigint not null constraint liked_task_tasks_id_fk references mytask.tasks
+	  			);
+				
+				create table mytask.follow (
+		  			id serial not null constraint follow_pk primary key,
+					following bigint not null constraint follow_users_id_fk references mytask.users,
+					followed bigint not null constraint follow_tasks_id_fk references mytask.tasks
+	  			);
+				
+				create table mytask.story (
+		  			id serial not null constraint story_pk primary key,
+					user_id bigint not null constraint story_users_id_fk references mytask.users,
+					content varchar(255),
+					created_at timestamptz DEFAULT now(),
+		  			expire_date timestamptz
+	  			);
+				
+				create table mytask.viewed_story (
+		  			id serial not null constraint viewed_story_pk primary key,
+					user_id bigint not null constraint viewed_story_users_id_fk references mytask.users,
+					story_id bigint not null constraint viewed_story_story_id_fk references mytask.story
+	  			);
+			]]>
+		  </sql>
+	</changeSet>
+</databaseChangeLog>
