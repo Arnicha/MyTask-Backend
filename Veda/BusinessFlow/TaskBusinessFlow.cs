@@ -92,5 +92,25 @@ namespace MyTask.BusinessFlow
             }
             return taskResponse;
         }
+        public List<TaskResponse> GetAllTasksPublishByUserId(long userId)
+        {
+            List<TaskEntity> tasks = new List<TaskEntity>();
+            List<TaskResponse> tasksResponse = new List<TaskResponse>();
+            try
+            {
+                tasks = taskService.GetAllTasksPublishByUserIdIncludeTodolist(userId);
+                foreach (TaskEntity item in tasks)
+                {
+                    ColorsEntity color = colorService.GetColorByCoverColorId(item.coverColorId);
+                    TaskResponse taskResponse = createTaskBusinessLogic.MapCreateTaskResponse(item, item.todolist, color);
+                    tasksResponse.Add(taskResponse);
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            return tasksResponse;
+        }
     }
 }

@@ -8,5 +8,6 @@ namespace MyTask.Service.Task
         TaskEntity CreateTask(TaskEntity newTask);
         List<TaskEntity> GetAllTasksByUserIdIncludeTodolist(long userId);
         TaskEntity GetTasksByTaskIdIncludeTodolist(long userId, long taskId);
+        List<TaskEntity> GetAllTasksPublishByUserIdIncludeTodolist(long userId);
     }
 }

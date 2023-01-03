@@ -18,20 +18,32 @@ namespace MyTask.Controllers
         }
 
         [HttpPost("api/v1/task")]
-        public TaskResponse CreateTask([FromBody]CreateTaskRequest createTaskRequest)
+        public TaskResponse CreateTask([FromBody] CreateTaskRequest createTaskRequest)
         {
             long userId = GetUserId();
             return taskBusinessFlow.CreateTask(userId, createTaskRequest);
         }
-        [HttpGet("api/v1/users/{userId}/tasks")]
-        public List<TaskResponse> GetAllTasksByUserId(long userId)
+
+        [HttpGet("api/v1/tasks")]
+        public List<TaskResponse> GetAllTasksByUserId()
         {
+            long userId = GetUserId();
             return taskBusinessFlow.GetAllTasksByUserId(userId);
         }
-        [HttpGet("api/v1/users/{userId}/tasks/{taskId}")]
-        public TaskResponse GetTaskByTaskId(long userId,long taskId)
+
+        [HttpGet("api/v1/tasks/{taskId}")]
+        public TaskResponse GetTaskByTaskId(long taskId)
         {
+            long userId = GetUserId();
             return taskBusinessFlow.GetTaskByTaskId(userId, taskId);
         }
+
+        [HttpGet("api/v1/tasks/publish")]
+        public List<TaskResponse> GetAllTasksPublishByUserId()
+        {
+            long userId = GetUserId();
+            return taskBusinessFlow.GetAllTasksPublishByUserId(userId);
+        }
+
     }
 }
