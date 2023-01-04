@@ -10,6 +10,9 @@ namespace MyTask.Models.Response
         public string topic { get; set; }
         public string description { get; set; }
         public ColorsEntity coverCodeColor { get; set; }
+        public bool isPublic { get; set; }
+        public decimal progress { get; set; }
+        public string scaleProgress { get; set; }
         public DateTime dueDate { get; set; }
         public List<TodolistResponse> todolist { get; set; }
     }

@@ -46,7 +46,8 @@ namespace MyTask.BusinessFlow
                     createTodolistResponse = todolistService.CreateTodolist(newTodolist);
                 }
                 ColorsEntity color = colorService.GetColorByCoverColorId(createTaskResponse.coverColorId);
-                TaskResponse taskResponse = createTaskBusinessLogic.MapCreateTaskResponse(createTaskResponse, createTodolistResponse, color);
+                decimal progressPercent = createTaskBusinessLogic.CalculateProress(createTaskResponse);
+                TaskResponse taskResponse = createTaskBusinessLogic.MapCreateTaskResponse(createTaskResponse, createTodolistResponse, color, progressPercent);
                 baseRepository.Commit(transaction);
                 return taskResponse;
             }
@@ -66,7 +67,8 @@ namespace MyTask.BusinessFlow
                 foreach (TaskEntity item in tasks)
                 {
                     ColorsEntity color = colorService.GetColorByCoverColorId(item.coverColorId);
-                    TaskResponse taskResponse = createTaskBusinessLogic.MapCreateTaskResponse(item, item.todolist, color);
+                    decimal progressPercent = createTaskBusinessLogic.CalculateProress(item);
+                    TaskResponse taskResponse = createTaskBusinessLogic.MapCreateTaskResponse(item, item.todolist, color, progressPercent);
                     tasksResponse.Add(taskResponse);
                 }
             }
@@ -84,7 +86,8 @@ namespace MyTask.BusinessFlow
             {
                 task = taskService.GetTasksByTaskIdIncludeTodolist(userId, taskId);
                 ColorsEntity color = colorService.GetColorByCoverColorId(task.coverColorId);
-                taskResponse = createTaskBusinessLogic.MapCreateTaskResponse(task, task.todolist, color);
+                decimal progressPercent = createTaskBusinessLogic.CalculateProress(task);
+                taskResponse = createTaskBusinessLogic.MapCreateTaskResponse(task, task.todolist, color, progressPercent);
             }
             catch
             {

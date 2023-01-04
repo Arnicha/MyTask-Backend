@@ -1,8 +1,10 @@
 ﻿using MyTask.Models.Entity;
 using MyTask.Models.Request;
 using MyTask.Models.Response;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MyTask.BusinessLogic.CreateTaskBusinestLogic
 {
@@ -24,7 +26,7 @@ namespace MyTask.BusinessLogic.CreateTaskBusinestLogic
             };
             return newTask;
         }
-        public TaskResponse MapCreateTaskResponse(TaskEntity createTaskResponse, List<TodolistEntity> createTodolistResponse, ColorsEntity color)
+        public TaskResponse MapCreateTaskResponse(TaskEntity createTaskResponse, List<TodolistEntity> createTodolistResponse, ColorsEntity color, decimal progress)
         {
             List<TodolistResponse> todolistResponse = new List<TodolistResponse>();
             foreach (TodolistEntity item in createTodolistResponse)
@@ -37,16 +39,37 @@ namespace MyTask.BusinessLogic.CreateTaskBusinestLogic
                 };
                 todolistResponse.Add(mapTodo);
             }
+            string scaleProgressText = CalculateScaleProgress(progress);
             TaskResponse taskResponse = new TaskResponse()
             {
                 id = createTaskResponse.id,
                 topic = createTaskResponse.topic,
                 description = createTaskResponse.description,
                 coverCodeColor = color,
+                isPublic = createTaskResponse.isPublic,
+                progress = progress,
+                scaleProgress = scaleProgressText,
                 dueDate = createTaskResponse.dueDate,
                 todolist = todolistResponse
             };
             return taskResponse;
+        }
+        public decimal CalculateProress(TaskEntity item)
+        {
+            int countTodos = item.todolist.Count;
+            int countTodoIsSuccess = item.todolist.Count(a => a.isCompleted == true);
+            decimal process = (countTodoIsSuccess * 100) / countTodos;
+            return process;
+        }
+        public string CalculateScaleProgress(decimal progress)
+        {
+            decimal scaleProgress = (progress * 145) / 100;
+            if (scaleProgress > 145)
+            {
+                scaleProgress = 145;
+            }
+            string scaleProgressText = "w-[" + Math.Round(scaleProgress).ToString() + "px]";
+            return scaleProgressText;
         }
     }
 }
