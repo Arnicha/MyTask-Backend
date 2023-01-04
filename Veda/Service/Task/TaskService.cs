@@ -23,6 +23,12 @@ namespace MyTask.Service.Task
             return tasks;
         }
 
+        public List<TaskEntity> GetAllTasksPublishByUserIdIncludeTodolist(long userId)
+        {
+            List<TaskEntity> tasks = baseRepository.GetInclude<TaskEntity>(null, filter: a => a.userId == userId && a.isPublic == true, includeProperties: "todolist");
+            return tasks;
+        }
+
         public TaskEntity GetTasksByTaskIdIncludeTodolist(long userId, long taskId)
         {
             TaskEntity task = baseRepository.GetItemInclude<TaskEntity>(filter: a => a.userId == userId && a.id == taskId, includeProperties: "todolist");
